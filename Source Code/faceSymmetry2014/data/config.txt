@@ -1,0 +1,7 @@
+scale,1.8000002
+height,690.0
+active camera (run camera app to get number),0
+serial port (run serial app to get number),2
+title picture name,title.jpg
+milliseconds to wait before screensaver,20000
+milliseconds to wait between images,3000
