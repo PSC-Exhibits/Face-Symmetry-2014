@@ -1,3 +1,8 @@
+/* Face Symmetry 2014
+Pacific Science Center/ Lia Martinez 
+github.com/psc-exhibits
+*/
+
 import processing.video.*;
 import processing.serial.*;
 Serial myPort; 
@@ -36,10 +41,7 @@ int activePin = -1;
 
 void setup() { 
 
-  w = 1280;
-  h = 720; 
-
-  String[] config = loadStrings ("config.txt"); 
+  String[] config = loadStrings ("config.csv"); 
   if (config.length < 1) {
     println ("Error. No config file found. loading defaults.");   
     scale = 2.0; 
@@ -49,34 +51,30 @@ void setup() {
     titlePic = "title.jpg"; 
     waitInterval = 20000; 
     displayInterval = 3000;
+    w = 1280; 
+    h = 720;
   } 
   else {
-    println ("Loading config.txt file ..."); 
-    String[] s = new String [2]; 
-    String[] h = new String [2]; 
-    String[] a = new String [2];
-    String[] sp = new String [2]; 
-    String[] t = new String [2];
-    String[] w = new String [2];
-    String[] d = new String [2];
+    println ("Loading config.csv file ..."); 
+    String[] s = split (config[0], ","); 
+    String[] hh = split (config[1], ","); 
+    String[] a = split (config[2], ",");
+    String[] sp = split (config[3], ",");    
+    String[] t = split (config[4], ",");
+    String[] wa = split (config[5], ",");
+    String[] d = split (config[6], ",");
+    String[] wi = split (config[7], ",");
+    String[] he = split (config[8], ",");
 
-
-    for (int i = 0; i < config.length; i++) {
-      s = split (config[0], ","); 
-      h = split (config[1], ","); 
-      a = split (config[2], ",");
-      sp = split (config[3], ",");   
-      t = split (config[4], ",");
-      w = split (config[5], ","); 
-      d = split (config[6], ",");
-    }
     scale = float(s[1]); 
-    frameHeight = float(h[1]);
+    frameHeight = float(hh[1]);
     activeCam = int (a[1]); 
     serialPort = int (sp[1]); 
     titlePic = t[1]; 
-    waitInterval = int(w[1]); 
+    waitInterval = int(wa[1]); 
     displayInterval = int(d[1]);
+    w = int(wi[1]);
+    h = int(he[1]);
   }
 
 
@@ -111,7 +109,7 @@ void setup() {
   else {
     println("Available cameras:");
     for (int i = 0; i < cameras.length; i++) {
-      println(cameras[i]);
+      println(i + " " + cameras[i]);
     }
 
     cam = new Capture(this, cameras[activeCam]);
@@ -245,6 +243,7 @@ void draw() {
 void serialEvent (Serial myPort) {
   String input = myPort.readString(); 
 
+
   if (firstContact == false) {
     if (input.equals("A")) { 
       println ("I see the arduino!"); 
@@ -254,20 +253,11 @@ void serialEvent (Serial myPort) {
     }
   } 
   else {
-    switches[serialCount] = input; 
-    serialCount++; 
-
-    if (serialCount > switches.length-1) {
-      for (int i = 0; i < switches.length; i++) {
-        if (switches[i].equals("1")) {
-          if (state != int(i)) {
-            activePin = i; 
-            newPin = true;
-          }
-        }
-      }
-      myPort.write('A');
-      serialCount = 0;
+    int intSw = int(input); 
+    if (state != intSw) {
+      activePin = intSw; 
+      newPin = true;
+       myPort.write('A');
     }
   }
 }
@@ -309,7 +299,7 @@ void rightSide() {
 }
 
 void saveFile() {
-  println ("Settings saved to data/config.txt"); 
+  println ("Settings saved to data/config.csv"); 
   String [] data = {
     "scale," + str(scale), 
     "height," + str(frameHeight), 
@@ -317,9 +307,11 @@ void saveFile() {
     "serial port (run serial app to get number)," + str(serialPort), 
     "title picture name," + titlePic, 
     "milliseconds to wait before screensaver," + str(waitInterval), 
-    "milliseconds to wait between images," + str(displayInterval),
+    "milliseconds to wait between images," + str(displayInterval), 
+    "camWidth," + str(w), 
+    "camHeight," + str(h),
   }; 
-  saveStrings ("data/config.txt", data);
+  saveStrings ("data/config.csv", data);
 }
 
 

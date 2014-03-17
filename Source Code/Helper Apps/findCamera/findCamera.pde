@@ -1,7 +1,7 @@
 import processing.video.*;
 
 void setup() {
-  size (500, 800); 
+  size (1400, 900); 
   background (0); 
   String[] cameras = Capture.list();
 
@@ -16,7 +16,10 @@ void setup() {
   else {
     println("Available cameras:");
     for (int i = 0; i < cameras.length; i++) {
-      text(i + " " + cameras[i], 20, 20* i + 50);
+      if (i < 40 )text(i + " " + cameras[i], 20, 20* i + 50);
+      if (i >= 39 && i < 80) text(i + " " + cameras[i], 20 + 400, 20* i + 50 - (20*40));
+      else text(i + " " + cameras[i], 20 + 800, 20* i + 50 - (20*80));
+      println (i + " " + cameras[i]); 
     }
   }
 
